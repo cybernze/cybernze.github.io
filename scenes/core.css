@@ -1,0 +1,17 @@
+/* Shared frame for motion scenes. Everything is sized in cqw so a scene scales with its frame. */
+.sc{container-type:inline-size;position:relative;width:100%;aspect-ratio:16/10;overflow:hidden;border-radius:8px;text-align:left;line-height:1.35;user-select:none;-webkit-font-smoothing:antialiased}
+.sc *{box-sizing:border-box;margin:0;padding:0}
+.sc kbd{font:inherit}
+
+/* demo pointer: the agent's pointer is dark, the human's is the board accent */
+.sc-ptr{position:absolute;left:60%;top:110%;z-index:50;width:2.4cqw;height:2.4cqw;pointer-events:none;opacity:0;
+  transition-property:left,top,opacity,transform;transition-timing-function:cubic-bezier(.65,0,.35,1);transition-duration:700ms}
+.sc-ptr::before{content:"";position:absolute;inset:0;background:#12110d;clip-path:polygon(0 0,0 78%,24% 60%,40% 96%,54% 90%,38% 55%,70% 55%);filter:drop-shadow(0 0 1px #fff) drop-shadow(0 .3cqw .4cqw #0005)}
+.sc-ptr.human::before{background:#c4421a}
+.sc-ptr.on{opacity:1}
+.sc-ptr.tap{transform:scale(.82)}
+.sc-ptr::after{content:"";position:absolute;left:-1.2cqw;top:-1.2cqw;width:2.4cqw;height:2.4cqw;border-radius:50%;border:2px solid currentColor;opacity:0;color:#1f5eff}
+.sc-ptr.tap::after{animation:sc-ripple .5s ease-out}
+@keyframes sc-ripple{0%{opacity:.8;transform:scale(.3)}100%{opacity:0;transform:scale(1.6)}}
+.sc .pressed{transform:scale(.96)}
+@media (prefers-reduced-motion:reduce){.sc-ptr{display:none}}

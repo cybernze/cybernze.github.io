@@ -1,0 +1,33 @@
+/* Latent Carriers — a lab-notebook results sheet. Red = completed tool calls, green = guard on. */
+.sc-carriers{--paper:#f6f5f1;--ink:#17181b;--dim:#5b5e66;--line:#17181b1f;--hot:#c73b43;--guard:#1f7a55;
+  background:var(--paper);color:var(--ink);font:400 1.15cqw/1.4 'Spline Sans Mono',ui-monospace,monospace}
+.cr{position:absolute;inset:0;padding:1.6cqw 2.2cqw;display:grid;grid-template-columns:1.1fr 1fr;grid-template-rows:auto 1fr;gap:1.4cqw 2.6cqw}
+.cr-top{grid-column:1/-1;display:flex;align-items:baseline;gap:1.4cqw;border-bottom:1px solid var(--line);padding-bottom:1cqw}
+.cr-top b{font:800 2.2cqw 'Bricolage Grotesque',system-ui,sans-serif;letter-spacing:-.02em}
+.cr-top span{color:var(--dim)}.cr-top em{margin-left:auto;font-style:normal;color:var(--dim);font-size:1cqw}
+.cr h4{font:600 1.5cqw 'Bricolage Grotesque',system-ui,sans-serif;margin-bottom:1cqw}.cr h4 small{font:400 1cqw 'Spline Sans Mono',monospace;color:var(--dim);margin-left:.6cqw}
+.cr-mx{display:grid;grid-template-columns:auto repeat(3,1fr);gap:.5cqw;align-items:center}
+.cr-col{font-size:.9cqw;color:var(--dim);text-align:center}
+.cr-row{font-size:.9cqw;color:var(--dim);text-align:right;padding-right:.4cqw}
+.cr-mx i{aspect-ratio:1.35;border-radius:.6cqw;display:flex;align-items:baseline;justify-content:center;gap:.2cqw;padding-top:1.9cqw;font-style:normal;
+  background:color-mix(in oklab,var(--hot) calc(var(--v) * 85%),#fff);color:var(--ink);opacity:0;transform:scale(.85);transition:opacity .4s,transform .5s cubic-bezier(.16,1,.3,1)}
+.cr-mx i.in{opacity:1;transform:none}
+.cr-mx i b{font:700 2.6cqw 'Bricolage Grotesque',system-ui,sans-serif}
+.cr-mx i small{font-size:.9cqw;opacity:.7}
+.cr-mx i[style*="--v:1;"] , .cr-mx i[style="--v:1"]{color:#fff}
+.cr-note{margin-top:1.2cqw;color:var(--dim);font-size:.95cqw;line-height:1.5}
+.cr-b{display:flex;flex-direction:column;min-height:0}
+.cr-bars{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4cqw;flex:1;min-height:0;padding-top:2.4cqw;overflow:hidden}
+.cr-arm{display:flex;flex-direction:column-reverse;gap:.6cqw}
+.cr-arm p{display:flex;flex-direction:column;font-size:.9cqw}.cr-arm p b{font-size:1.1cqw}.cr-arm p small{color:var(--dim)}
+.cr-pair{flex:1;min-height:0;display:flex;align-items:flex-end;gap:.4cqw;border-bottom:1px solid var(--ink)}
+.cr-pair span{flex:1;border-radius:.3cqw .3cqw 0 0;position:relative;transform:scaleY(0);transform-origin:bottom;transition:transform 1s cubic-bezier(.16,1,.3,1)}
+.cr-pair .off{background:var(--hot)}.cr-pair .on{background:var(--guard);min-height:0}
+.cr-pair .off{height:calc(var(--v) * 100%)}.cr-pair .on{height:max(.35cqw,calc(var(--v) * 100%))}
+.cr.b-off .cr-pair .off,.cr.b-on .cr-pair .on{transform:none}
+.cr-pair em{position:absolute;bottom:100%;left:0;right:0;text-align:center;font-style:normal;font-size:.9cqw;padding-bottom:.2cqw;opacity:0;transition:opacity .4s .6s}
+.cr.b-off .off em,.cr.b-on .on em{opacity:1}
+.cr-leg{display:flex;gap:1.4cqw;font-size:.9cqw;color:var(--dim);margin-top:.8cqw}.cr-leg i{display:inline-block;width:.8cqw;height:.8cqw;border-radius:.2cqw;margin-right:.4cqw}.cr-leg .off{background:var(--hot)}.cr-leg .on{background:var(--guard)}
+.cr-big{margin-top:1cqw;display:flex;align-items:baseline;flex-wrap:wrap;gap:.3cqw}
+.cr-big b{font:800 3.4cqw 'Bricolage Grotesque',system-ui,sans-serif}.cr-big .cr-k2{color:var(--guard);transition:color .3s}
+.cr-big small{color:var(--dim)}.cr-big span{flex-basis:100%;color:var(--dim);font-size:.95cqw}
