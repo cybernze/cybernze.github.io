@@ -2,7 +2,7 @@
 (() => {
   const P = {
     tessera: {
-      name: 'Tessera', kind: 'Startup · Founder · 2025 —', link: ['tesserahq.eu', 'https://tesserahq.eu'],
+      name: 'Tessera', kind: 'Startup · Founder · since Aug 2026', link: ['tesserahq.eu', 'https://tesserahq.eu'],
       summary: 'A regulatory assurance workspace for cybersecurity consultancies. NIS2, DORA, BIA and EU AI Act engagements become reviewed controls, registers and versioned deliverables. The AI proposes, the consultant signs, and every step is traced.',
       built: [
         'Control desks for NIS2 (53 controls), DORA, BIA, EU AI Act, ENS, CRA and ISO 42001, sharing one evidence layer',
