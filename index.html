@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Carlos Agudo — Board</title>
+<title>Carlos Agudo — AI Systems Engineer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Caveat:wght@500;700&family=Spline+Sans+Mono:wght@400;500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
@@ -151,7 +151,7 @@ a{color:inherit}
     <div class="intro-card">
       <div class="intro-head">
         <span class="intro-kicker">AI engineer · Barcelona</span>
-        <h1>Carlos Agudo builds <span>AI agents</span> for serious work.</h1>
+        <h1>Carlos Agudo engineers <span>AI systems</span> for regulated work.</h1>
       </div>
       <div class="intro-l">
         <p class="intro-lede">I build agentic AI for regulated work (legal, compliance, finance), where every answer has to trace back to a source. Then I try to break it: offensive security and LLM red-teaming are the other half of what I do.</p>
@@ -189,7 +189,7 @@ a{color:inherit}
       <section class="frame intro" data-i="1" style="left:150px;top:180px;--w:1060px">
         <label>hello / 01</label>
         <div class="body card">
-          <h1>Carlos Agudo<br>builds <span>AI agents</span><br>for serious work.</h1>
+          <h1>Carlos Agudo<br>engineers <span>AI systems</span><br>for regulated work.</h1>
           <p>AI engineer in Barcelona and founder of Tessera. This board is my portfolio. Every frame is a product I built, rebuilt in motion from its real interface. Click <b>Inspect</b> on any of them for the details.</p>
           <div class="meta"><span>Cuatrecasas · AI Engineer Intern</span><span>UPC · Computer Eng.</span><span>Red-team certified</span></div>
         </div>
@@ -301,9 +301,8 @@ const fit = (x, y, w, h, pad = 220) => { const z = Math.min((innerWidth - (inner
 let WAY = [];
 function measure() {
   const overview = fit(0, 0, 3700, 2700, 40);
-  const hello = frames[0], close = fit(hello.offsetLeft, hello.offsetTop, hello.offsetWidth, hello.offsetHeight, 0);
-  // 0 = right up against the hello frame (under the intro), 1 = overview, 2..8 = frames, 9 = overview
-  WAY = [{ ...close, z: close.z * 1.35 }, overview, ...frames.map(f => fit(f.offsetLeft, f.offsetTop - 30, f.offsetWidth, f.offsetHeight + 30)), overview];
+  // 0 = overview, slightly closer (under the intro), 1 = overview, 2..8 = frames, 9 = overview
+  WAY = [{ ...overview, z: overview.z * 1.12 }, overview, ...frames.map(f => fit(f.offsetLeft, f.offsetTop - 30, f.offsetWidth, f.offsetHeight + 30)), overview];
   // each waypoint holds for a moment then travels
   document.getElementById('stops').innerHTML = WAY.map(() => '<div style="--h:120vh"></div>').join('');
   track.style.height = '';
