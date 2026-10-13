@@ -2,12 +2,13 @@
    Story: search a company, inspect its filed accounts and checks, open the report, the assistant refuses to move the number.
    Atelier Lumen SAS is the app's own fictional sample company. */
 (() => {
-  const { register, sleep, type, count, point, $, $$ } = window.Scenes;
+  const { register, sleep, type, count, point, focus, $, $$ } = window.Scenes;
   const LOGO = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5 12 20l9-14.5M8 5.5l4 6.5 4-6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const GHOST = ['4 812 300', '612 400', '431 700', '1 909 100', '377 900', '2 140 800', '498 200', '1 204 000', '154 200', '176 400', '3 615', '11 264', '300 420', '4 095 559'];
   const eur = v => '€' + Math.round(v).toLocaleString('fr-FR').replace(/ /g, ' ');
 
   register('valuable', {
+    start: '.vl-home h1',
     label: 'Valuable demo: search a French company, check its filed accounts, open a sourced valuation range',
     html: () => `
 <div class="vl">
@@ -66,8 +67,11 @@
       await sleep(500, sig);
 
       // 2 · accounts appear, figures roll, checks pass
+      focus(root, $(root, '.vl-table'));
       for (const r of $$(root, '.vl-table p:not(.h)')) { r.classList.add('in'); await sleep(260, sig); }
+      focus(root, $(root, '.vl-figs'));
       await Promise.all($$(root, '.vl-figs b').map(b => count(b, +b.dataset.v, sig, 1100, eur)));
+      focus(root, $(root, '.vl-checks'));
       for (const c of $$(root, '.vl-checks p')) { c.classList.add('in'); await sleep(420, sig); }
       $(root, '.vl-ready').classList.add('in');
       await sleep(900, sig);
@@ -76,13 +80,13 @@
       $(root, '.vl-nav.on').classList.remove('on'); $$(root, '.vl-nav')[1].classList.add('on');
       $(root, '.vl-co').classList.remove('on'); $(root, '.vl-rep').classList.add('on');
       await sleep(400, sig);
-      $(root, '.vl-rep').classList.add('go');
+      $(root, '.vl-rep').classList.add('go'); focus(root, $(root, '.vl-hero'));
       await count($(root, '.vl-big'), 4.86, sig, 1300, v => '€' + v.toFixed(2) + 'M');
-      await sleep(1300, sig);
+      await sleep(900, sig); focus(root, $(root, '.vl-methods')); await sleep(1600, sig);
 
       // 4 · the assistant explains but cannot move the number
       await point(root, $(root, '.vl-askbtn'), sig);
-      $(root, '.vl-ask').classList.add('open');
+      $(root, '.vl-ask').classList.add('open'); focus(root, $(root, '.vl-ask'));
       await type($(root, '.vl-askq'), 'Can you use an 8× multiple instead?', sig, 34);
       await sleep(500, sig);
       await type($(root, '.vl-aska'), 'No. I can explain the range, not change it. The 6.2× comes from the reviewed peer set.', sig, 18);

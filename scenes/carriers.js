@@ -1,13 +1,14 @@
 /* Latent Carriers (bachelor's thesis) — results only, from the deposited report (1 Oct 2026).
    Study A: writer × executor, Guard OFF, n=50 per cell. Study B: ±Memory Taint Guard, n=50 per arm. */
 (() => {
-  const { register, sleep, count, $, $$ } = window.Scenes;
+  const { register, sleep, count, focus, $, $$ } = window.Scenes;
   const MODELS = ['Gemini 2.5 Flash', 'GPT-4.1 mini', 'Claude Haiku 4.5'];
   // sink ASR out of 50; rows = writer, cols = executor (G, M, H)
   const A = [[50, 50, 38], [50, 50, 14], [50, 15, 0]];
   const B = [['CTRL', 'G → G', 0], ['H1', 'H → G', 1], ['H2', 'shared store', 0], ['H3', 'respawn', 0]];
 
   register('carriers', {
+    start: '.cr-mx',
     label: 'Latent Carriers results: study A matrix across writer and executor models, and study B with Memory Taint Guard off and on',
     html: () => `
 <div class="cr">
@@ -33,10 +34,10 @@
       const cells = $$(root, '.cr-mx i');
       for (const c of cells) { c.classList.add('in'); count(c.querySelector('b'), +c.querySelector('b').dataset.v, sig, 600); await sleep(160, sig); }
       await sleep(1400, sig);
-      $(root, '.cr').classList.add('b-off');
+      focus(root, $(root, '.cr-bars')); $(root, '.cr').classList.add('b-off');
       await sleep(1200, sig);
       $(root, '.cr').classList.add('b-on');
-      await sleep(500, sig); $(root, '.cr-k2').textContent = '0';
+      await sleep(500, sig); $(root, '.cr-k2').textContent = '0'; focus(root, $(root, '.cr-big'));
       await sleep(3400, sig);
     },
   });

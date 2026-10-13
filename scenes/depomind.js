@@ -1,10 +1,11 @@
 /* DepoMind — rebuilt from the Next.js app's remote deposition room (dark, Newsreader + Inter, mono transcript).
    Story: question, answer, a compound question draws an objection on form, rephrase, then an exhibit is shared. */
 (() => {
-  const { register, sleep, type, point, $, $$ } = window.Scenes;
+  const { register, sleep, type, point, focus, $, $$ } = window.Scenes;
   const BARS = '<i></i>'.repeat(9);
 
   register('depomind', {
+    start: '.dm-stage',
     label: 'DepoMind demo: an attorney questions an AI witness, AI defending counsel objects to a compound question, an exhibit is shared',
     html: () => `
 <div class="dm">
@@ -52,18 +53,18 @@
       await say('w', 'Around February twentieth, I believe.', 'a', 'A.');
       await say('y', 'And you read it and forwarded it to the board that day?', 'q', 'Q.');
       // defending counsel objects on form
-      talk('c'); root.querySelector('.dm').dataset.who = 'c';
+      talk('c'); root.querySelector('.dm').dataset.who = 'c'; focus(root, $(root, '.dm-obj'));
       $(root, '.dm-obj').classList.add('on');
       cap.textContent = 'Objection. Form. Compound question.';
       log('obj', 'COUNSEL: Objection, form. Compound.');
-      await sleep(1900, sig);
-      $(root, '.dm-obj').classList.remove('on');
+      await sleep(1000, sig); focus(root, $(root, '.dm-lines')); await sleep(1300, sig);
+      $(root, '.dm-obj').classList.remove('on'); focus(root, $(root, '.dm-stage'));
       await say('y', 'I’ll rephrase. Did you read the report on February twentieth?', 'q', 'Q.');
       await wait();
       await say('w', 'Yes.', 'a', 'A.');
       // share an exhibit
       await point(root, $(root, '.dm-share'), sig);
-      $(root, '.dm-sheet').classList.add('on'); $(root, '.dm-stage').classList.add('shared');
+      $(root, '.dm-sheet').classList.add('on'); focus(root, $(root, '.dm-sheet')); $(root, '.dm-stage').classList.add('shared');
       await sleep(700, sig);
       await say('y', 'Is this your email of February twenty-first?', 'q', 'Q.');
       await wait();

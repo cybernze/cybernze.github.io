@@ -1,7 +1,7 @@
 /* Bulletin Radar — rebuilt from the app's web UI (dark base theme) and fed with the real dataset in data/radar-data.js:
    province outlines, municipality points, weekly counts by phase and three real energy notices. */
 (() => {
-  const { register, sleep, count, point, $, $$ } = window.Scenes;
+  const { register, sleep, count, point, focus, $, $$ } = window.Scenes;
   const D = window.RADAR_DATA;
   const CAT = { energia: 'Energía', urbanismo: 'Urbanismo', industria: 'Industria', transporte: 'Transporte', obra_hidraulica: 'Obra hidráulica', puerto: 'Puertos', mineria: 'Minería', otro: 'Otro', costas: 'Costas' };
   const PHASES = ['Información pública', 'Otorgamiento', 'Expropiación', 'Resolución', 'Convocatoria', 'Otro'];
@@ -11,6 +11,7 @@
   const top = Math.max(...weekTot);
 
   register('radar', {
+    start: '.rd-map svg',
     label: 'Bulletin Radar demo: 1,208 real notices fill the map of Spain week by week, then the energy filter leaves 434',
     html: () => `
 <div class="rd">
@@ -56,8 +57,10 @@
         $(root, '.rd-day').textContent = fmtDay(d);
         $$(root, '.rd-cats em').forEach(e => { e.textContent = Math.round(+e.dataset.v * d / days); });
         root.querySelector('.rd').style.setProperty('--k', (d / days).toFixed(3));
+        if (d === Math.round(days * .6)) focus(root, $(root, '.rd-week'));
         await sleep(70, sig);
       }
+      focus(root, $(root, '.rd-cats'));
       cols.forEach(c => c.classList.add('on'));
       await sleep(1100, sig);
 
@@ -70,6 +73,7 @@
       $(root, '.rd-catv').textContent = 'Energía (434)';
       root.querySelector('.rd').classList.add('filtered');
       $$(root, '.rd-cats p').forEach(p => p.classList.toggle('dim', p.dataset.c !== '0'));
+      focus(root, $(root, '.rd-map svg'));
       await count(n, 434, sig, 700);
       await sleep(600, sig);
 
@@ -78,7 +82,7 @@
         const ping = $(root, '.rd-ping'); ping.setAttribute('cx', ex.xy[0]); ping.setAttribute('cy', ex.xy[1]); ping.classList.add('on');
         const card = $(root, '.rd-card');
         card.innerHTML = `<p class="rd-meta"><b>${ex.src}</b> · ${new Date(ex.pub).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })} · Energía · <span class="ip">Información pública</span></p><p class="rd-title">${ex.title}</p><p class="rd-prom">${ex.prom}<em>Plazo ${ex.dl} d</em></p>`;
-        card.classList.add('on');
+        card.classList.add('on'); focus(root, card);
         await sleep(2800, sig);
         card.classList.remove('on'); ping.classList.remove('on');
         await sleep(400, sig);

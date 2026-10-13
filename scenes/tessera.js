@@ -1,7 +1,7 @@
 /* Tessera — rebuilt from the live staging UI (ledger palette, Geist, T-of-five-tiles mark).
    Story: the NIS2 mosaic fills, the consultant asks the agent to draft A.04, the agent drives the UI, the human saves. */
 (() => {
-  const { register, sleep, type, count, point, $, $$ } = window.Scenes;
+  const { register, sleep, type, count, point, focus, $, $$ } = window.Scenes;
   const LOGO = '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="4.5" y="4.5" width="28" height="28" rx="3.5" fill="#12110D"/><rect x="36" y="4.5" width="28" height="28" rx="3.5" fill="#12110D"/><rect x="67.5" y="4.5" width="28" height="28" rx="3.5" fill="#12110D"/><rect x="36" y="36" width="28" height="28" rx="3.5" fill="#12110D"/><rect x="36" y="67.5" width="28" height="28" rx="3.5" fill="#1F5EFF"/></svg>';
   // NIS2 mosaic as on the home tile: b = compliant, h = partial, x = gap, o = not reviewed yet
   const MOSAIC = 'bbbxbhhhxx' + 'hhbbhxbxhb' + 'hbbhhxbbbb' + 'bxhxb' + 'ooooo' + 'oooooooooo' + 'ooo';
@@ -11,6 +11,7 @@
   const CRITERIA = ['Training plan approved by the board', 'Attendance records for the last 12 months', 'Content covers NIS2 Art. 20 duties', 'Annual refresh scheduled'];
 
   register('tessera', {
+    start: '.ts-mosaic',
     label: 'Tessera demo: the agent opens control A.04, fills it from cited evidence, and the consultant saves it',
     html: () => `
 <div class="ts">
@@ -95,7 +96,8 @@
       root.querySelector('.ts').classList.add('agent');
       $(root, '.ts-path').textContent = '/';
       await sleep(700, sig);
-      await point(root, $(root, '.ts-in'), sig, { ms: 500 });
+      focus(root, $(root, '.ts-agent'), 'top');
+      await point(root, $(root, '.ts-in'), sig, { ms: 500, follow: false });
       await type($(root, '.ts-typed'), 'Open A.04 and draft it from the evidence', sig, 30);
       await sleep(250, sig);
       const chat = $(root, '.ts-chat');
@@ -103,7 +105,7 @@
       say('ts-u', $(root, '.ts-typed').textContent); $(root, '.ts-typed').textContent = '';
       $(root, '.ts-chips').classList.add('gone');
       await sleep(400, sig);
-      const steps = say('ts-steps', '');
+      const steps = say('ts-steps', ''); focus(root, $(root, '.ts-chat'), 'top');
       const step = async (txt, fn, wait = 650) => {
         const s = document.createElement('p'); s.innerHTML = `<i></i>${txt}`; steps.append(s);
         await sleep(wait, sig); if (fn) await fn(); s.classList.add('done'); await sleep(200, sig);
@@ -117,18 +119,18 @@
       });
       await step('Selecting A.04', async () => { $(root, '[data-c="A.04"]').classList.add('on'); $(root, '.ts-ctl').classList.add('on'); }, 500);
       await step('Reading 2 cited documents', async () => {
-        const c = $(root, '.ts-cites'); $(root, '.ts-prop').classList.add('on');
+        const c = $(root, '.ts-cites'); $(root, '.ts-prop').classList.add('on'); focus(root, $(root, '.ts-prop'));
         for (const f of ['08-Security-Awareness-Training-Log.xlsx · p. 3', '01-Information-Security-Policy.pdf · §4.2']) {
           const s = document.createElement('span'); s.textContent = f; c.append(s); await sleep(260, sig);
         }
       }, 800);
       await step('Filling the criteria', async () => {
-        const marks = [0, 0, 1, 2];
+        const marks = [0, 0, 1, 2]; focus(root, $(root, '[data-k="1"]'));
         for (const [i, m] of marks.entries()) { $(root, `[data-k="${i}"]`).querySelectorAll('.ts-tri i')[m].classList.add('on'); await sleep(260, sig); }
         $(root, '.ts-lvl').textContent = 'L2'; $(root, '.ts-mat').classList.add('flash');
         await type($(root, '.ts-why'), 'Board training happened in March (log, p. 3) but there is no annual refresh scheduled.', sig, 14);
       }, 400);
-      say('ts-a', 'Done. I filled A.04 on screen. <b>Review it and save — I never save on my own.</b>');
+      focus(root, $(root, '.ts-chat'), 'top'); say('ts-a', 'Done. I filled A.04 on screen. <b>Review it and save — I never save on my own.</b>');
       $(root, '.ts-save').classList.add('ring');
       await sleep(1700, sig);
 
@@ -136,7 +138,7 @@
       root.querySelector('.sc-ptr').classList.add('human');
       await point(root, $(root, '.ts-save'), sig, { ms: 900 });
       $(root, '.ts-save').classList.remove('ring');
-      $(root, '.ts-toast').classList.add('on');
+      $(root, '.ts-toast').classList.add('on'); focus(root, $(root, '.ts-toast'));
       await sleep(2600, sig);
     },
   });

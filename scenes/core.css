@@ -15,3 +15,11 @@
 @keyframes sc-ripple{0%{opacity:.8;transform:scale(.3)}100%{opacity:0;transform:scale(1.6)}}
 .sc .pressed{transform:scale(.96)}
 @media (prefers-reduced-motion:reduce){.sc-ptr{display:none}}
+
+/* phones: a square window onto the UI drawn at 250%, panned by focus() */
+.sc-cam{position:relative;overflow:hidden;aspect-ratio:1/1.08;border-radius:10px;box-shadow:0 20px 40px -24px #0006;background:#fff}
+.sc-cam > .sc{width:250%!important;aspect-ratio:16/10;border-radius:0;box-shadow:none;transition:transform .9s cubic-bezier(.65,0,.35,1);will-change:transform}
+.sc-cam .sc-ptr{width:2cqw;height:2cqw}
+.sc-mini{position:absolute;right:8px;bottom:8px;width:56px;height:35px;border-radius:4px;background:#17181bb3;backdrop-filter:blur(4px);pointer-events:none}
+.sc-mini i{position:absolute;left:0;top:0;width:40%;height:69%;border:1.5px solid #fff;border-radius:2px;transition:transform .9s cubic-bezier(.65,0,.35,1)}
+@media (prefers-reduced-motion:reduce){.sc-cam > .sc,.sc-mini i{transition:none}}

@@ -4,6 +4,8 @@
   const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
   class Stopped extends Error {}
   const SCENES = {};
+  // phones: the UI is drawn at 250% inside a square window, and a camera follows the action
+  const CAM = matchMedia('(max-width: 820px)').matches;
 
   const sleep = (ms, sig) => new Promise((res, rej) => {
     if (sig.aborted) return rej(new Stopped());
@@ -25,10 +27,27 @@
     } catch (e) { if (!(e instanceof Stopped)) throw e; } // counters often run unawaited; stopping the scene ends them quietly
   }
 
+  // camera (phones only): pan so the element sits in the middle of the window; desktop ignores it
+  // align 'top' frames the element's top edge near the top of the window instead of centring it
+  function focus(root, el, align = 'center') {
+    const cam = root.parentElement;
+    if (!el || !cam?.classList.contains('sc-cam')) return;
+    const r = root.getBoundingClientRect(), t = el.getBoundingClientRect(), c = cam.getBoundingClientRect();
+    const cx = t.left - r.left + t.width / 2;
+    const cy = align === 'top' ? t.top - r.top + c.height * .42 : t.top - r.top + t.height / 2;
+    const x = Math.min(0, Math.max(c.width - r.width, c.width / 2 - cx));
+    const y = Math.min(0, Math.max(c.height - r.height, c.height / 2 - cy));
+    root.style.transform = `translate(${x}px,${y}px)`;
+    const box = cam.querySelector('.sc-mini i');
+    // the mini box is the window's share of the UI; translate % is relative to the box itself
+    if (box) box.style.transform = `translate(${(-x / c.width) * 100}%,${(-y / c.height) * 100}%)`;
+  }
+
   // the demo pointer: moves to the centre of a target element inside the scene, then clicks
-  async function point(root, target, sig, { click = true, ms = 700 } = {}) {
+  async function point(root, target, sig, { click = true, ms = 700, follow = true } = {}) {
     const ptr = root.querySelector('.sc-ptr');
     if (!ptr || !target) return;
+    if (follow) focus(root, target);
     const r = root.getBoundingClientRect(), t = target.getBoundingClientRect();
     const x = ((t.left - r.left + t.width * .55) / r.width) * 100, y = ((t.top - r.top + t.height * .6) / r.height) * 100;
     ptr.style.transitionDuration = ms + 'ms';
@@ -51,8 +70,14 @@
     el.classList.add('sc', 'sc-' + el.dataset.scene);
     el.setAttribute('role', 'img');
     el.setAttribute('aria-label', scene.label);
+    if (CAM) {
+      const cam = document.createElement('div');
+      cam.className = 'sc-cam';
+      el.replaceWith(cam); cam.append(el);
+      cam.insertAdjacentHTML('beforeend', '<span class="sc-mini" aria-hidden="true"><i></i></span>');
+    }
     let ctrl = null;
-    const reset = () => { el.innerHTML = scene.html() + '<i class="sc-ptr" aria-hidden="true"></i>'; scene.init?.(el); };
+    const reset = () => { el.innerHTML = scene.html() + '<i class="sc-ptr" aria-hidden="true"></i>'; scene.init?.(el); if (CAM) focus(el, el.querySelector(scene.start || ':scope > *')); };
     reset();
     const loop = async () => {
       ctrl = new AbortController();
@@ -70,7 +95,7 @@
   window.Scenes = {
     register: (name, scene) => { SCENES[name] = scene; },
     mountAll: (root = document) => root.querySelectorAll('[data-scene]').forEach(mount),
-    mount, sleep, type, count, point, $, $$, REDUCE,
+    mount, sleep, type, count, point, focus, $, $$, REDUCE, CAM,
   };
   addEventListener('load', () => window.Scenes.mountAll());
 })();
