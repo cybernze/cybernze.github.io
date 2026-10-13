@@ -61,7 +61,7 @@
   const log = document.getElementById('chat-log'), form = document.getElementById('chat-form'), input = document.getElementById('chat-in'), send = form.querySelector('button');
   const sleep = ms => new Promise(r => setTimeout(r, REDUCE ? 0 : ms));
   let busy = false;
-  const SHEET = matchMedia('(max-width: 820px)');
+  const SHEET = matchMedia('(max-width: 820px), (max-height: 500px)');
   const chat = document.getElementById('chat');
   const openSheet = () => { if (!SHEET.matches || chat.classList.contains('open')) return; chat.classList.add('open'); document.documentElement.classList.add('sheet'); };
   const closeSheet = () => { chat.classList.remove('open'); document.documentElement.classList.remove('sheet'); };
