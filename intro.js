@@ -61,6 +61,12 @@
   const log = document.getElementById('chat-log'), form = document.getElementById('chat-form'), input = document.getElementById('chat-in'), send = form.querySelector('button');
   const sleep = ms => new Promise(r => setTimeout(r, REDUCE ? 0 : ms));
   let busy = false;
+  const SHEET = matchMedia('(max-width: 820px)');
+  const chat = document.getElementById('chat');
+  const openSheet = () => { if (!SHEET.matches || chat.classList.contains('open')) return; chat.classList.add('open'); document.documentElement.classList.add('sheet'); };
+  const closeSheet = () => { chat.classList.remove('open'); document.documentElement.classList.remove('sheet'); };
+  chat.querySelector('.chat-x').addEventListener('click', closeSheet);
+  addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
 
   function loader(variant, label) {
     const { delays, dur, round } = VARIANTS[variant];
@@ -77,6 +83,7 @@
 
   async function ask(text, key) {
     if (busy) return;
+    openSheet();
     busy = true; send.disabled = true;
     bubble('me', escapeHtml(text));
     key = key || (KEYS.find(([, re]) => re.test(text)) || [null])[0];
@@ -113,6 +120,7 @@
   log.addEventListener('click', e => {
     const b = e.target.closest('button[data-act]'); if (!b) return;
     const [kind, arg] = b.dataset.act.split(':');
+    if (kind !== 'ask') closeSheet();
     if (kind === 'ask') ask(b.textContent, arg);
     else if (kind === 'go') window.Board.goTo(+arg);
     else if (kind === 'enter') window.Board.goTo(0);
@@ -124,6 +132,7 @@
 
   // the first question asks itself so the loader explains the page
   (async () => {
+    if (SHEET.matches) return; // on phones the chat waits to be opened
     await sleep(1100);
     const q = 'What do you specialise in?';
     if (!REDUCE) for (let i = 1; i <= q.length; i++) { input.value = q.slice(0, i); await sleep(42); }
