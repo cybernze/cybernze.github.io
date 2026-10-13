@@ -16,10 +16,11 @@
 .sc .pressed{transform:scale(.96)}
 @media (prefers-reduced-motion:reduce){.sc-ptr{display:none}}
 
-/* phones: a square window onto the UI drawn at 250%, panned by focus() */
-.sc-cam{position:relative;overflow:hidden;aspect-ratio:1/1.08;border-radius:10px;box-shadow:0 20px 40px -24px #0006;background:#fff}
-.sc-cam > .sc{width:250%!important;aspect-ratio:16/10;border-radius:0;box-shadow:none;transition:transform .9s cubic-bezier(.65,0,.35,1);will-change:transform}
-.sc-cam .sc-ptr{width:2cqw;height:2cqw}
-.sc-mini{position:absolute;right:8px;bottom:8px;width:56px;height:35px;border-radius:4px;background:#17181bb3;backdrop-filter:blur(4px);pointer-events:none}
-.sc-mini i{position:absolute;left:0;top:0;width:40%;height:69%;border:1.5px solid #fff;border-radius:2px;transition:transform .9s cubic-bezier(.65,0,.35,1)}
+/* phones: the full UI in a 16:10 window; focus() zooms in on beats and back out */
+.sc-cam{position:relative;overflow:hidden;aspect-ratio:16/10;border-radius:10px;box-shadow:0 20px 40px -24px #0006;background:#fff}
+.sc-cam > .sc{border-radius:0;box-shadow:none;transform-origin:0 0;transition:transform .8s cubic-bezier(.65,0,.35,1)}
+.sc-mini{position:absolute;right:6px;bottom:6px;width:44px;height:27.5px;border-radius:3px;background:#17181bb3;pointer-events:none;opacity:0;transition:opacity .3s}
+.sc-cam.zoomed .sc-mini{opacity:1}
+.sc-mini i{position:absolute;left:0;top:0;width:45.5%;height:45.5%;border:1.5px solid #fff;border-radius:2px;transition:transform .8s cubic-bezier(.65,0,.35,1)}
 @media (prefers-reduced-motion:reduce){.sc-cam > .sc,.sc-mini i{transition:none}}
+.sc-cam .sc-ptr{width:max(2.4cqw,11px);height:max(2.4cqw,11px)}

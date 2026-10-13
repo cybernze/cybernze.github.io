@@ -27,20 +27,24 @@
     } catch (e) { if (!(e instanceof Stopped)) throw e; } // counters often run unawaited; stopping the scene ends them quietly
   }
 
-  // camera (phones only): pan so the element sits in the middle of the window; desktop ignores it
-  // align 'top' frames the element's top edge near the top of the window instead of centring it
+  // camera (phones only): the whole UI shows by default; on a beat it zooms in on the element,
+  // then returns to the full view. align 'top' frames the element's top edge instead of its centre.
+  const ZOOM = 2.2, HOLD = 2400;
   function focus(root, el, align = 'center') {
     const cam = root.parentElement;
     if (!el || !cam?.classList.contains('sc-cam')) return;
-    const r = root.getBoundingClientRect(), t = el.getBoundingClientRect(), c = cam.getBoundingClientRect();
-    const cx = t.left - r.left + t.width / 2;
-    const cy = align === 'top' ? t.top - r.top + c.height * .42 : t.top - r.top + t.height / 2;
-    const x = Math.min(0, Math.max(c.width - r.width, c.width / 2 - cx));
-    const y = Math.min(0, Math.max(c.height - r.height, c.height / 2 - cy));
-    root.style.transform = `translate(${x}px,${y}px)`;
+    const c = cam.getBoundingClientRect(), r = root.getBoundingClientRect(), t = el.getBoundingClientRect();
+    const k = r.width / c.width || 1; // current scale
+    const cx = (t.left - r.left + t.width / 2) / k;
+    const cy = align === 'top' ? (t.top - r.top) / k + c.height * .2 : (t.top - r.top + t.height / 2) / k;
+    const x = Math.min(0, Math.max(c.width - c.width * ZOOM, c.width / 2 - cx * ZOOM));
+    const y = Math.min(0, Math.max(c.height - c.height * ZOOM, c.height / 2 - cy * ZOOM));
+    root.style.transform = `translate(${x}px,${y}px) scale(${ZOOM})`;
+    cam.classList.add('zoomed');
     const box = cam.querySelector('.sc-mini i');
-    // the mini box is the window's share of the UI; translate % is relative to the box itself
     if (box) box.style.transform = `translate(${(-x / c.width) * 100}%,${(-y / c.height) * 100}%)`;
+    clearTimeout(cam._out);
+    cam._out = setTimeout(() => { root.style.transform = ''; cam.classList.remove('zoomed'); }, HOLD);
   }
 
   // the demo pointer: moves to the centre of a target element inside the scene, then clicks
@@ -77,7 +81,7 @@
       cam.insertAdjacentHTML('beforeend', '<span class="sc-mini" aria-hidden="true"><i></i></span>');
     }
     let ctrl = null;
-    const reset = () => { el.innerHTML = scene.html() + '<i class="sc-ptr" aria-hidden="true"></i>'; scene.init?.(el); if (CAM) focus(el, el.querySelector(scene.start || ':scope > *')); };
+    const reset = () => { el.innerHTML = scene.html() + '<i class="sc-ptr" aria-hidden="true"></i>'; scene.init?.(el); };
     reset();
     const loop = async () => {
       ctrl = new AbortController();
